@@ -1,0 +1,408 @@
+{
+  "document_universe": {
+    "metadata": {
+      "company_name": "QuickStop Chain",
+      "total_stores": 850,
+      "regions": ["Northeast", "Southeast", "Midwest", "Southwest", "West"],
+      "date_range": {
+        "start": "2023-01-01",
+        "end": "2024-12-31"
+      }
+    },
+    
+    "document_types": [
+      {
+        "id": "pci_compliance_audit",
+        "category": "cybersecurity",
+        "format": "pdf",
+        "frequency": "quarterly",
+        "priority": "high",
+        "template": {
+          "sections": [
+            "Executive Summary",
+            "Scope and Methodology",
+            "Compliance Status by Store",
+            "Critical Findings",
+            "Remediation Requirements",
+            "Timeline and Costs"
+          ],
+          "data_points": [
+            "stores_audited",
+            "pass_fail_rates",
+            "critical_violations",
+            "estimated_remediation_cost"
+          ],
+          "relationships": [
+            "references: store_inventory",
+            "impacts: quarterly_financial_report",
+            "triggers: security_remediation_email"
+          ]
+        },
+        "generation_instructions": "Create a detailed PCI DSS compliance audit report. Include specific store IDs that failed, technical violations (unencrypted card data, weak passwords, missing patches), and remediation costs. Make some stores pass with flying colors, others fail critically.",
+        "quantity": 8
+      },
+      
+      {
+        "id": "ransomware_incident_report",
+        "category": "cybersecurity",
+        "format": "pdf",
+        "frequency": "as_needed",
+        "priority": "critical",
+        "template": {
+          "sections": [
+            "Incident Timeline",
+            "Affected Systems",
+            "Business Impact Analysis",
+            "Response Actions",
+            "Recovery Status",
+            "Lessons Learned"
+          ],
+          "data_points": [
+            "stores_affected",
+            "downtime_hours",
+            "revenue_loss",
+            "ransom_demand",
+            "recovery_cost"
+          ],
+          "relationships": [
+            "impacts: store_sales_report",
+            "references: incident_response_playbook",
+            "triggers: crisis_communication_email",
+            "affects: quarterly_financial_report"
+          ]
+        },
+        "generation_instructions": "Create a ransomware incident affecting 5-7 stores in one region. Include timeline from initial infection through recovery, specific systems affected (POS, inventory, corporate network), ransom demand amount, decision on whether to pay, and total business impact including lost sales.",
+        "quantity": 2
+      },
+      
+      {
+        "id": "security_awareness_training_report",
+        "category": "cybersecurity",
+        "format": "excel",
+        "frequency": "monthly",
+        "priority": "medium",
+        "template": {
+          "sheets": [
+            "Completion by Store",
+            "Completion by Region",
+            "Phishing Test Results",
+            "Knowledge Assessment Scores"
+          ],
+          "data_points": [
+            "employee_id",
+            "completion_date",
+            "test_score",
+            "phishing_click_rate",
+            "modules_completed"
+          ],
+          "relationships": [
+            "references: employee_roster",
+            "impacts: security_kpi_dashboard",
+            "mentioned_in: regional_manager_memo"
+          ]
+        },
+        "generation_instructions": "Generate training completion data for all stores. Show 75-95% completion rates with some stores lagging. Include phishing simulation results showing 15-30% click rates initially improving to 5-10% after training.",
+        "quantity": 12
+      },
+      
+      {
+        "id": "quarterly_financial_report",
+        "category": "financial",
+        "format": "pdf",
+        "frequency": "quarterly",
+        "priority": "high",
+        "template": {
+          "sections": [
+            "Revenue Summary",
+            "Operating Expenses",
+            "IT and Security Investments",
+            "Incident Impact Analysis",
+            "Regional Performance",
+            "Year-over-Year Comparison"
+          ],
+          "data_points": [
+            "total_revenue",
+            "operating_costs",
+            "security_budget",
+            "incident_losses",
+            "profit_margin"
+          ],
+          "relationships": [
+            "incorporates: ransomware_incident_report",
+            "references: store_sales_report",
+            "includes: pci_compliance_costs"
+          ]
+        },
+        "generation_instructions": "Create comprehensive financial report. Include line items for cybersecurity investments, costs from security incidents, PCI compliance expenses. Show how ransomware incident affected quarterly numbers.",
+        "quantity": 8
+      },
+      
+      {
+        "id": "store_manager_email",
+        "category": "communications",
+        "format": "text",
+        "frequency": "daily",
+        "priority": "low",
+        "template": {
+          "email_types": [
+            "security_incident_notification",
+            "policy_update_acknowledgment",
+            "training_reminder",
+            "suspicious_activity_report",
+            "vendor_security_concern"
+          ],
+          "data_points": [
+            "sender",
+            "recipients",
+            "date",
+            "subject",
+            "body",
+            "attachments_mentioned"
+          ],
+          "relationships": [
+            "references: security_policies",
+            "mentions: specific_incidents",
+            "follows_up: training_reports"
+          ]
+        },
+        "generation_instructions": "Create realistic email threads. Include: manager reporting suspicious customer trying to install skimmer, IT warning about phishing campaign, discussion about new security camera installation, concerns about vendor accessing POS systems, follow-ups on failed PCI audit items.",
+        "quantity": 150
+      },
+      
+      {
+        "id": "vendor_security_assessment",
+        "category": "cybersecurity",
+        "format": "pdf",
+        "frequency": "annual",
+        "priority": "high",
+        "template": {
+          "sections": [
+            "Vendor Profile",
+            "Access Requirements",
+            "Security Questionnaire Results",
+            "Risk Rating",
+            "Contractual Requirements",
+            "Approval Status"
+          ],
+          "data_points": [
+            "vendor_name",
+            "services_provided",
+            "data_access_level",
+            "security_score",
+            "compliance_certifications"
+          ],
+          "relationships": [
+            "impacts: third_party_risk_register",
+            "referenced_in: vendor_contracts",
+            "affects: pci_compliance_audit"
+          ]
+        },
+        "generation_instructions": "Assess vendors like POS system provider, fuel management system, loyalty program processor, cleaning services, ATM servicer. Some should have high access to sensitive systems. Include at least one vendor with poor security that needs remediation.",
+        "quantity": 25
+      },
+      
+      {
+        "id": "security_camera_upgrade_proposal",
+        "category": "initiatives",
+        "format": "powerpoint",
+        "frequency": "as_needed",
+        "priority": "medium",
+        "template": {
+          "slides": [
+            "Current System Limitations",
+            "Proposed AI-Enabled Solution",
+            "Coverage Maps by Store Type",
+            "Integration with Loss Prevention",
+            "Cost-Benefit Analysis",
+            "Rollout Timeline",
+            "ROI Projections"
+          ],
+          "data_points": [
+            "current_camera_count",
+            "proposed_camera_count",
+            "ai_capabilities",
+            "total_investment",
+            "expected_loss_reduction"
+          ],
+          "relationships": [
+            "impacts: capital_budget",
+            "references: loss_prevention_stats",
+            "mentioned_in: board_presentation"
+          ]
+        },
+        "generation_instructions": "Propose upgrading from analog to IP cameras with AI analytics for detecting theft, loitering, and potential security threats. Include specific costs per store, phased rollout plan prioritizing high-crime locations.",
+        "quantity": 3
+      },
+      
+      {
+        "id": "data_breach_tabletop_exercise",
+        "category": "cybersecurity",
+        "format": "pdf",
+        "frequency": "bi-annual",
+        "priority": "medium",
+        "template": {
+          "sections": [
+            "Exercise Scenario",
+            "Participant Roles",
+            "Timeline of Events",
+            "Decision Points",
+            "Response Evaluation",
+            "Gaps Identified",
+            "Improvement Recommendations"
+          ],
+          "data_points": [
+            "scenario_type",
+            "participants",
+            "response_time",
+            "decisions_made",
+            "effectiveness_score"
+          ],
+          "relationships": [
+            "tests: incident_response_playbook",
+            "informs: security_training_updates",
+            "references: previous_incidents"
+          ]
+        },
+        "generation_instructions": "Document a tabletop exercise simulating customer payment card data breach. Include realistic scenario, participant responses, communication challenges, legal/PR considerations, and identified gaps in response plan.",
+        "quantity": 4
+      },
+      
+      {
+        "id": "store_inventory_report",
+        "category": "operations",
+        "format": "excel",
+        "frequency": "weekly",
+        "priority": "medium",
+        "template": {
+          "sheets": [
+            "Product Inventory",
+            "Fuel Levels",
+            "Equipment Status",
+            "Security Equipment Inventory"
+          ],
+          "data_points": [
+            "product_sku",
+            "quantity_on_hand",
+            "reorder_point",
+            "security_equipment_status",
+            "camera_operational_status"
+          ],
+          "relationships": [
+            "affects: purchase_orders",
+            "referenced_in: store_manager_emails",
+            "includes: security_equipment_audit"
+          ]
+        },
+        "generation_instructions": "Standard inventory including special tab for security equipment status (cameras, alarms, POS terminals, card readers). Show some equipment needing updates for PCI compliance.",
+        "quantity": 200
+      },
+      
+      {
+        "id": "phishing_campaign_analysis",
+        "category": "cybersecurity",
+        "format": "pdf",
+        "frequency": "monthly",
+        "priority": "medium",
+        "template": {
+          "sections": [
+            "Campaign Overview",
+            "Targeting Analysis",
+            "Click Rates by Department",
+            "Compromised Credentials",
+            "Remediation Actions",
+            "Training Recommendations"
+          ],
+          "data_points": [
+            "emails_sent",
+            "click_rate",
+            "credential_entry_rate",
+            "reports_received",
+            "time_to_report"
+          ],
+          "relationships": [
+            "triggers: security_awareness_training",
+            "mentioned_in: ciso_report",
+            "impacts: security_kpi_dashboard"
+          ]
+        },
+        "generation_instructions": "Document monthly phishing simulation results. Show improvement over time, but identify specific departments (like store management) with higher click rates. Include examples of phishing templates used.",
+        "quantity": 12
+      }
+    ],
+    
+    "document_relationships": {
+      "incident_cascade": {
+        "description": "How security incidents ripple through documentation",
+        "example_flow": [
+          "ransomware_incident_report",
+          "crisis_communication_email",
+          "store_sales_report (showing impact)",
+          "quarterly_financial_report (showing losses)",
+          "board_presentation (explaining impact)",
+          "security_investment_proposal (preventing future)"
+        ]
+      },
+      
+      "compliance_thread": {
+        "description": "PCI compliance documentation chain",
+        "example_flow": [
+          "pci_compliance_audit (findings)",
+          "remediation_project_plan",
+          "vendor_security_assessment (for POS vendor)",
+          "store_manager_emails (about fixes)",
+          "training_reports (PCI training)",
+          "follow_up_audit (verification)"
+        ]
+      }
+    },
+    
+    "benchmark_categories": [
+      {
+        "category": "factual_retrieval",
+        "description": "Simple fact-finding questions",
+        "examples": [
+          "What was the ransom demand in the March incident?",
+          "Which stores failed PCI compliance in Q3?",
+          "What is the password policy requirement?"
+        ],
+        "target_count": 150
+      },
+      {
+        "category": "multi_document_reasoning",
+        "description": "Questions requiring information from multiple documents",
+        "examples": [
+          "How did the ransomware incident affect the Midwest region's Q2 profitability?",
+          "Which vendor security assessments were triggered by PCI audit failures?"
+        ],
+        "target_count": 100
+      },
+      {
+        "category": "temporal_analysis",
+        "description": "Questions about changes over time",
+        "examples": [
+          "How did phishing click rates change after the Q2 training initiative?",
+          "What security improvements were made between the first and second PCI audits?"
+        ],
+        "target_count": 75
+      },
+      {
+        "category": "impact_analysis",
+        "description": "Questions about cause and effect",
+        "examples": [
+          "What was the total financial impact of security incidents in 2024?",
+          "How did the new security camera system affect loss prevention metrics?"
+        ],
+        "target_count": 75
+      },
+      {
+        "category": "policy_compliance",
+        "description": "Questions about policy adherence",
+        "examples": [
+          "Which departments had the lowest security training completion rates?",
+          "What vendor violated the third-party security requirements?"
+        ],
+        "target_count": 100
+      }
+    ]
+  }
+}
