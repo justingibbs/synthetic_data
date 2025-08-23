@@ -1,13 +1,205 @@
 # CLAUDE.md - Working with Claude on the Synthetic Benchmark Generator
 
-This document contains optimized prompts for working with Claude on various aspects of the Synthetic Benchmark Data Generator project. Copy and adapt these prompts based on your specific needs.
+This document contains optimized prompts for working with Claude on various aspects of the Synthetic Benchmark Data Generator project, including Knowledge Graph extraction and ontology discovery. Copy and adapt these prompts based on your specific needs.
 
 ## Table of Contents
 - [Document Generation Prompts](#document-generation-prompts)
 - [Benchmark Question Generation](#benchmark-question-generation)
+- [Knowledge Graph Extraction](#knowledge-graph-extraction)
+- [Ontology Discovery](#ontology-discovery)
 - [Code Development Assistance](#code-development-assistance)
 - [Data Consistency and Validation](#data-consistency-and-validation)
 - [Security Scenario Development](#security-scenario-development)
+
+---
+
+## Knowledge Graph Extraction
+
+### Extract Entities and Relationships from Security Report
+
+```
+Extract all entities and relationships from this ransomware incident report for a knowledge graph. Use the following ontology:
+
+Entity Types:
+- SecurityIncident (id, type, date, severity, financial_impact)
+- Store (store_id, region, type, compliance_status)
+- Employee (employee_id, name, role, email)
+- System (system_name, type, criticality, version)
+- FinancialPeriod (period_id, quarter, year, revenue)
+
+Relationship Types:
+- AFFECTS (source: SecurityIncident, target: Store/System/Employee)
+- MANAGES (source: Employee, target: Store)
+- COSTS_INCURRED (source: SecurityIncident, target: FinancialPeriod)
+- DOCUMENTED_IN (source: Any, target: Document)
+
+Document Content:
+[Paste incident report here]
+
+For each entity, provide:
+1. Entity ID (unique identifier)
+2. Entity Type
+3. All attributes with values
+4. Confidence score (0-1)
+
+For each relationship, provide:
+1. Relationship type
+2. Source entity ID
+3. Target entity ID
+4. Relationship attributes
+5. Confidence score
+
+Also identify:
+- Any ambiguous entity references that need resolution
+- Potential new entity or relationship types not in the ontology
+- Temporal aspects (when relationships were valid)
+```
+
+### Generate Knowledge Graph Test Cases
+
+```
+Create 20 knowledge graph extraction test cases for evaluating entity and relationship extraction systems. Use the QuickStop convenience store domain.
+
+For each test case, provide:
+
+1. A document snippet (2-3 paragraphs) containing:
+   - At least 3 entities of different types
+   - At least 2 relationships between entities
+   - Some ambiguous references requiring resolution
+   - Mix of explicit and implicit information
+
+2. Ground truth extraction:
+   - Complete list of entities with all attributes
+   - Complete list of relationships with attributes
+   - Entity resolution mappings (which mentions refer to same entity)
+
+3. Difficulty assessment:
+   - Easy: Explicit mentions, standard formats
+   - Medium: Some inference required, name variations
+   - Hard: Coreference resolution, implicit relationships
+
+4. Common extraction errors to test for:
+   - Missing implicit relationships
+   - Incorrect entity type classification
+   - Failed coreference resolution
+   - Temporal relationship errors
+
+Format as JSON with clear structure for automated testing.
+```
+
+### Create Entity Resolution Challenges
+
+```
+Generate 10 entity resolution challenges for the QuickStop domain. Each challenge should test the system's ability to recognize that different mentions refer to the same entity.
+
+For each challenge:
+
+1. Provide 3-5 different text snippets from different documents
+2. Each snippet mentions the same entity differently:
+   - Full formal name
+   - Abbreviated name
+   - Pronoun reference
+   - Role-based reference
+   - Partial name
+
+Example entities to create challenges for:
+- Store (ST1234, Store #1234, the Riverside location, our main store)
+- Employee (John Smith, J. Smith, the manager, Smith, john.smith@quickstop.com)
+- Incident (INC-2024-001, the March ransomware attack, the incident, last quarter's breach)
+
+Include ground truth mappings and difficulty ratings.
+```
+
+---
+
+## Ontology Discovery
+
+### Discover New Entity Types from Documents
+
+```
+Analyze these documents from QuickStop Chain and identify potential new entity types that aren't in our current ontology.
+
+Current ontology includes:
+- Store, Employee, Customer, SecurityIncident, ComplianceAudit, Document, System, Vendor
+
+Documents to analyze:
+[Paste 3-5 document excerpts]
+
+For each potential new entity type:
+1. Entity type name
+2. Why it should be a distinct entity (not just an attribute)
+3. Suggested parent type in hierarchy
+4. Required attributes
+5. Optional attributes
+6. Example instances found
+7. Extraction patterns to identify it
+8. Confidence score (based on frequency and distinctiveness)
+
+Also identify:
+- Potential subtypes of existing entities
+- Attributes that should be promoted to entities
+- Entities that might be better as attributes
+```
+
+### Generate Ontology Evolution Scenarios
+
+```
+Create a realistic ontology evolution scenario for QuickStop Chain showing how the knowledge graph schema would grow over 12 months of document generation.
+
+Month 1 - Start with basic ontology:
+- Core entities: Store, Employee, Document
+- Core relationships: MANAGES, DOCUMENTED_IN
+
+For each subsequent month, show:
+1. New document types introduced
+2. New entity types discovered
+3. New relationship types discovered
+4. Refinements to existing types
+5. Validation rules learned
+
+Month 2 Example:
+- Introduced: Security incident reports
+- Discovered entities: SecurityIncident, System
+- Discovered relationships: AFFECTS, COMPROMISES
+- Refinement: Employee gains 'security_role' attribute
+- Validation: Incident IDs follow pattern INC-YYYY-NNN
+
+Continue through Month 12, showing realistic progression based on:
+- Business growth (new store types, new roles)
+- Security maturity (new incident types, compliance frameworks)
+- Operational complexity (vendor relationships, supply chain)
+
+Format as a progression diagram with clear dependencies.
+```
+
+### Design Ontology Validation Rules
+
+```
+Create comprehensive validation rules for the QuickStop knowledge graph ontology. 
+
+For each entity type, specify:
+1. Required attributes and their data types
+2. Attribute value constraints (regex patterns, enums, ranges)
+3. Cardinality constraints (min/max relationships)
+4. Temporal constraints (valid date ranges)
+5. Business logic rules
+
+For each relationship type, specify:
+1. Valid source entity types
+2. Valid target entity types
+3. Cardinality (1:1, 1:N, N:M)
+4. Required relationship attributes
+5. Temporal constraints
+6. Inverse relationships if applicable
+
+Include cross-entity validation rules:
+- Store manager must be an Employee with role='Manager'
+- Incident costs must appear in corresponding FinancialPeriod
+- Audit failures must have remediation plans
+- Vendor assessments required for critical system access
+
+Format as executable validation rules that can be implemented in Python.
+```
 
 ---
 
@@ -220,7 +412,68 @@ Make questions specific and reference actual events from the document corpus whe
 
 ## Code Development Assistance
 
-### Enhance Document Generator with Relationships
+### Enhance Document Generator with KG Extraction
+
+```
+I have a Python document generator that creates synthetic documents for a convenience store chain. I need to add knowledge graph extraction capabilities that track entities and relationships during document generation.
+
+Current Code Structure:
+- DocumentGenerator class with basic generation
+- JSON configuration for document types
+- Simple document registry
+
+Requirements:
+1. Track all entities created during generation (with unique IDs)
+2. Track all relationships between entities
+3. Maintain entity registry to ensure consistency across documents
+4. Support both explicit and implicit relationship creation
+5. Generate ground truth KG data alongside documents
+6. Handle temporal aspects (entity states changing over time)
+
+Specific implementation needs:
+- Entity ID generation strategy (ensure uniqueness and meaningful IDs)
+- Relationship validation (ensure source/target entities exist)
+- Coreference tracking (same entity, different mentions)
+- Temporal relationship tracking (valid_from, valid_to dates)
+- Export to multiple formats (JSON, Cypher, RDF)
+
+Please provide:
+1. Extended DocumentGenerator class with KG tracking
+2. Entity and Relationship dataclasses
+3. KnowledgeGraphBuilder class
+4. Methods for ground truth generation
+5. Export functionality for different graph database formats
+```
+
+### Implement Hybrid Ontology Discovery
+
+```
+Help me implement a hybrid ontology system that combines predefined entity types with dynamic discovery during document generation.
+
+Requirements:
+1. Start with core predefined entity types (Store, Employee, etc.)
+2. Discover new entity types from generated content
+3. Learn relationship patterns from document text
+4. Progressively refine the ontology
+5. Support different discovery modes (strict, guided, automatic)
+
+The system should:
+- Track candidate entity types and wait for threshold before promoting
+- Identify patterns that suggest new entity types
+- Learn extraction patterns from examples
+- Build entity hierarchy automatically
+- Validate discovered types against business rules
+
+Provide implementation for:
+1. HybridOntologyBuilder class
+2. Discovery pattern matching
+3. Confidence scoring for discoveries
+4. Promotion logic from candidate to confirmed
+5. Ontology evolution tracking
+6. Export to OWL/RDF formats
+```
+
+### Create File Format Writers with KG Annotations
 
 ```
 I have a Python document generator that creates synthetic documents for a convenience store chain. I need help adding sophisticated relationship tracking between documents.
@@ -449,6 +702,8 @@ Include enough detail to answer questions about trends, specific user behavior, 
 3. **Request Formats**: Always specify the output format you need (JSON, narrative, code, etc.)
 4. **Validation Loop**: Ask Claude to validate generated content against requirements
 5. **Iterative Refinement**: Start with basic generation, then add complexity in follow-up prompts
+6. **KG Consistency**: When generating entities, always reference the entity registry for consistency
+7. **Ontology Evolution**: Track discovered patterns and periodically review for ontology updates
 
 ## Project-Specific Context to Maintain
 
@@ -461,3 +716,6 @@ When working with Claude on this project, always provide:
 - Compliance framework: PCI DSS
 - Store ID format: ST[0000-9999]
 - Employee ID format: EMP[store][00-99]
+- Incident ID format: INC-YYYY-NNN
+- Ontology mode: hybrid (predefined + discovery)
+- KG export formats: JSON, Cypher, RDF, OWL
