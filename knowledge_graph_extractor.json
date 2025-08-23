@@ -1,0 +1,267 @@
+{
+  "knowledge_graph_schema": {
+    "entity_types": [
+      {
+        "type": "Store",
+        "attributes": {
+          "store_id": "string",
+          "region": "string",
+          "store_type": "enum[urban, highway, suburban]",
+          "manager": "reference[Employee]",
+          "compliance_status": "enum[compliant, non_compliant, pending]",
+          "last_audit_date": "date"
+        },
+        "extraction_rules": {
+          "patterns": ["ST[0-9]{4}", "Store #[0-9]+", "location [0-9]+"],
+          "context_clues": ["store", "location", "branch", "outlet"]
+        }
+      },
+      {
+        "type": "Employee",
+        "attributes": {
+          "employee_id": "string",
+          "name": "string",
+          "role": "string",
+          "email": "string",
+          "store": "reference[Store]",
+          "training_completed": "boolean",
+          "phishing_test_failed": "boolean"
+        },
+        "extraction_rules": {
+          "patterns": ["EMP[0-9]+", "[A-Z][a-z]+ [A-Z][a-z]+"],
+          "context_clues": ["manager", "employee", "staff", "associate"]
+        }
+      },
+      {
+        "type": "SecurityIncident",
+        "attributes": {
+          "incident_id": "string",
+          "incident_type": "enum[ransomware, data_breach, phishing, skimming]",
+          "date_occurred": "datetime",
+          "severity": "enum[critical, high, medium, low]",
+          "financial_impact": "float",
+          "resolution_status": "enum[resolved, ongoing, escalated]"
+        },
+        "extraction_rules": {
+          "patterns": ["INC-[0-9]{4}-[0-9]{3}", "incident #[0-9]+"],
+          "context_clues": ["incident", "breach", "attack", "compromise"]
+        }
+      },
+      {
+        "type": "Vendor",
+        "attributes": {
+          "vendor_id": "string",
+          "company_name": "string",
+          "service_type": "string",
+          "risk_rating": "enum[low, medium, high, critical]",
+          "has_data_access": "boolean",
+          "pci_compliant": "boolean"
+        }
+      },
+      {
+        "type": "ComplianceAudit",
+        "attributes": {
+          "audit_id": "string",
+          "audit_type": "enum[PCI_DSS, security, operational]",
+          "quarter": "string",
+          "year": "integer",
+          "pass_rate": "float",
+          "critical_findings": "integer"
+        }
+      },
+      {
+        "type": "FinancialPeriod",
+        "attributes": {
+          "period_id": "string",
+          "period_type": "enum[quarter, month, year]",
+          "start_date": "date",
+          "end_date": "date",
+          "total_revenue": "float",
+          "security_costs": "float"
+        }
+      },
+      {
+        "type": "Policy",
+        "attributes": {
+          "policy_id": "string",
+          "policy_name": "string",
+          "version": "string",
+          "effective_date": "date",
+          "category": "enum[security, operational, hr, compliance]"
+        }
+      },
+      {
+        "type": "System",
+        "attributes": {
+          "system_id": "string",
+          "system_name": "string",
+          "system_type": "enum[POS, network, security, operational]",
+          "criticality": "enum[critical, high, medium, low]",
+          "last_patched": "date"
+        }
+      }
+    ],
+    
+    "relationship_types": [
+      {
+        "type": "AFFECTS",
+        "source": "SecurityIncident",
+        "target": ["Store", "System", "Employee"],
+        "attributes": {
+          "impact_type": "string",
+          "duration_hours": "integer",
+          "data_exposed": "boolean"
+        },
+        "extraction_patterns": [
+          "{incident} affected {stores}",
+          "{incident} impacted {systems}",
+          "compromised {employee} credentials"
+        ]
+      },
+      {
+        "type": "MANAGES",
+        "source": "Employee",
+        "target": "Store",
+        "attributes": {
+          "start_date": "date",
+          "is_current": "boolean"
+        }
+      },
+      {
+        "type": "FAILED_AUDIT",
+        "source": "Store",
+        "target": "ComplianceAudit",
+        "attributes": {
+          "failure_reason": "string",
+          "remediation_cost": "float",
+          "remediation_deadline": "date"
+        }
+      },
+      {
+        "type": "TRIGGERS",
+        "source": "SecurityIncident",
+        "target": ["ComplianceAudit", "Policy"],
+        "attributes": {
+          "trigger_date": "date",
+          "mandatory": "boolean"
+        }
+      },
+      {
+        "type": "SERVICES",
+        "source": "Vendor",
+        "target": ["Store", "System"],
+        "attributes": {
+          "contract_value": "float",
+          "contract_end": "date",
+          "sla_met": "boolean"
+        }
+      },
+      {
+        "type": "REPORTS_TO",
+        "source": "Employee",
+        "target": "Employee",
+        "attributes": {
+          "reporting_type": "enum[direct, dotted, temporary]"
+        }
+      },
+      {
+        "type": "COSTS_INCURRED",
+        "source": ["SecurityIncident", "ComplianceAudit"],
+        "target": "FinancialPeriod",
+        "attributes": {
+          "cost_amount": "float",
+          "cost_category": "string",
+          "budgeted": "boolean"
+        }
+      },
+      {
+        "type": "VIOLATES",
+        "source": ["Store", "Employee", "Vendor"],
+        "target": "Policy",
+        "attributes": {
+          "violation_date": "date",
+          "severity": "enum[minor, major, critical]",
+          "resolved": "boolean"
+        }
+      },
+      {
+        "type": "COMMUNICATED_IN",
+        "source": ["SecurityIncident", "ComplianceAudit", "Policy"],
+        "target": "Document",
+        "attributes": {
+          "mention_type": "enum[primary, reference, summary]",
+          "page_number": "integer"
+        }
+      }
+    ],
+    
+    "extraction_strategies": {
+      "explicit_extraction": {
+        "description": "Extract from structured sections of documents",
+        "sources": ["tables", "lists", "headers", "metadata"],
+        "confidence": "high"
+      },
+      "pattern_extraction": {
+        "description": "Use regex and NLP patterns",
+        "sources": ["body_text", "emails", "reports"],
+        "confidence": "medium"
+      },
+      "inference_extraction": {
+        "description": "Infer relationships from context",
+        "sources": ["narrative_text", "implications", "discussions"],
+        "confidence": "low"
+      }
+    },
+    
+    "ground_truth_generation": {
+      "entity_tracking": {
+        "description": "Track all entities during document generation",
+        "implementation": "Store entity registry during generation",
+        "validation": "Ensure consistency across documents"
+      },
+      "relationship_tracking": {
+        "description": "Log all relationships as documents are created",
+        "implementation": "Build relationship graph during generation",
+        "validation": "Verify bidirectional consistency"
+      },
+      "temporal_tracking": {
+        "description": "Maintain timeline of all events and changes",
+        "implementation": "Create temporal graph layer",
+        "validation": "Ensure temporal consistency"
+      }
+    },
+    
+    "benchmark_tasks": [
+      {
+        "task": "entity_extraction",
+        "description": "Extract all entities from a document",
+        "metrics": ["precision", "recall", "f1"],
+        "difficulty_factors": ["ambiguous_references", "partial_mentions", "coreference"]
+      },
+      {
+        "task": "relationship_extraction",
+        "description": "Identify relationships between entities",
+        "metrics": ["precision", "recall", "relationship_type_accuracy"],
+        "difficulty_factors": ["implicit_relationships", "cross_document", "temporal"]
+      },
+      {
+        "task": "entity_resolution",
+        "description": "Resolve same entities across documents",
+        "metrics": ["clustering_accuracy", "pairwise_f1"],
+        "difficulty_factors": ["name_variations", "role_changes", "mergers"]
+      },
+      {
+        "task": "knowledge_graph_construction",
+        "description": "Build complete KG from document set",
+        "metrics": ["graph_edit_distance", "triple_accuracy", "consistency_score"],
+        "difficulty_factors": ["scale", "contradictions", "inference_required"]
+      },
+      {
+        "task": "temporal_graph_construction",
+        "description": "Build KG with temporal dimensions",
+        "metrics": ["temporal_accuracy", "event_ordering", "state_transitions"],
+        "difficulty_factors": ["concurrent_events", "duration_inference", "causality"]
+      }
+    ]
+  }
+}
